@@ -81,6 +81,7 @@
         <script type="text/javascript">
 
             function clearm(){
+              $("#tots").html("0");
               $("#t_containter").empty();
             }
 
@@ -91,6 +92,8 @@
                         if( typeof(productos[result.text]) == "undefined" ){
                             alert("Tu producto no esta en la base de datos");
                         }else{
+                          var tots = parseInt($("#tots").text());
+
                           var product_found = productos[result.text];
 
                           var $t = $("#template-p").html();
@@ -99,6 +102,10 @@
                                          .replace("##NOMBREPRODUCTO##",product_found.nombre)
                                          .replace("##CODIGO##",product_found.id)
                                          .replace("##PRECIO##",product_found.regular_price);
+
+                          tots = tots + parseInt(product_found.regular_price);
+
+                          $("#tots").html(tots);
 
                           $("#t_containter").append(result);
                           $("#t_containter").listview("refresh");
@@ -141,6 +148,10 @@
             <div data-role="footer" data-theme="none" style="text-align: center">
                 <button class="ui-btn" onclick="scan()">ESCANEAR CODIGO</button>
                 <button class="ui-btn" onclick="clearm()">LIMPIAR LISTA</button>
+                <h1>
+                  Total a Pagar: 
+                  <span id="tots">0</span>
+                </h1>
             </div><!-- /footer -->
         </div>
 
