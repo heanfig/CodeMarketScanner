@@ -32,16 +32,83 @@
         <script src="http://demos.jquerymobile.com/1.3.2/js/jquery.mobile-1.3.2.min.js"></script>
     </head>
     <body>
+        <script type="text/javascript">
+          var productos = {};
 
+              productos["7702354030209"] = {
+                id : "7702354030209",
+                nombre : "Gelatina Frutiño 40g",
+                regular_price : "1200",
+                image : "http://i.imgur.com/n4JFC0z.jpg"
+              };
+              
+              productos["7702354930905"] = {
+                id : "7702354930905",
+                nombre : "La sopera pollo  43g",
+                regular_price : "1500",
+                image : "http://i.imgur.com/YKjdLEi.jpg"
+              };
+
+              productos["7702024045984"] = {
+                id : "7702024045984",
+                nombre : "Nestle fitness miel 30 g",
+                regular_price : "900",
+                image : "http://i.imgur.com/3VlCYxv.jpg"
+              };
+
+              productos["78924895"] = {
+                id : "78924895",
+                nombre : "Desodorante",
+                regular_price : "900",
+                image : "http://i.imgur.com/3VlCYxv.jpg"
+              };
+              
+              productos["7702047131053"] = {
+                id : "7702047131053",
+                nombre : "Mayonesa Fruco 90g",
+                regular_price : "800",
+                image : "http://i.imgur.com/nf7D9K5.jpg"
+              };
+
+              productos["7701023661560"] = {
+                id : "7701023661560",
+                nombre : "Lomitos de atún en agua 170g",
+                regular_price : "2800",
+                image : "http://i.imgur.com/54ZtytP.jpg"
+              };
+        </script>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript">
+
+            function clear(){
+              $("#t_containter").html("");
+            }
+
             function scan(){
                   cordova.plugins.barcodeScanner.scan(
                       function (result) {
-                          alert("We got a barcode\n" +
-                                "Result: " + result.text + "\n" +
-                                "Format: " + result.format + "\n" +
-                                "Cancelled: " + result.cancelled);
+
+                        if( typeof(productos[result.text]) == "undefined" ){
+                            alert("Tu producto no esta en la base de datos");
+                        }else{
+                          var product_found = productos[result.text];
+
+                          var $t = $("#template-p").html();
+
+                          var result = $t.replace("##IMAGEN##",product_found.image)
+                                         .replace("##NOMBREPRODUCTO##",product_found.nombre)
+                                         .replace("##CODIGO##",product_found.id)
+                                         .replace("##PRECIO##",product_found.regular_price);
+
+                          $("#t_containter").append(result);
+                          $("#t_containter").listview("refresh");
+                          /*
+                            alert("We got a barcode\n" +
+                                  "Result: " + result.text + "\n" +
+                                  "Format: " + result.format + "\n" +
+                                  "Cancelled: " + result.cancelled);*/
+                        }
+
                       }, 
                       function (error) {
                           alert("Scanning failed: " + error);
@@ -50,25 +117,30 @@
             }
         </script>
 
+        <script type="text/html" id="template-p">
+          <li>
+            <a href="#">
+                <img src="##IMAGEN##">
+                <h2>##NOMBREPRODUCTO##</h2>
+                <p>##CODIGO##</p>
+                <p class="ui-li-aside">$ ##PRECIO##</p>
+            </a>
+          </li>
+        </script>
+        
         <div data-role="page" data-theme="a" id="demo-page" class="my-page" data-url="demo-page">
             <div data-role="header">
                 <h1>Carrito de compras</h1>
                 <!--<a href="grid-listview.html" data-shadow="false" data-iconshadow="false" data-icon="arrow-l" data-iconpos="notext" data-rel="back" data-ajax="false">Back</a>-->
             </div><!-- /header -->
             <div data-role="content">
-                <ul data-role="listview" data-inset="true">
-                    <li>
-                      <a href="#">
-                          <img src="http://demos.jquerymobile.com/1.3.2/_assets/img/tizen.png">
-                          <h2>iOS 6.1</h2>
-                          <p>Apple released iOS 6.1</p>
-                          <p class="ui-li-aside">iOS</p>
-                      </a>
-                    </li>
+                <ul data-role="listview" data-inset="true" id="t_containter">
+                    
                 </ul>
             </div><!-- /content -->
             <div data-role="footer" data-theme="none" style="text-align: center">
                 <button class="ui-btn" onclick="scan()">ESCANEAR CODIGO</button>
+                <button class="ui-btn" onclick="clear()">LIMPIAR LISTA</button>
             </div><!-- /footer -->
         </div>
 
